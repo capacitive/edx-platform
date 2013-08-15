@@ -3,34 +3,37 @@
         // #TODO: Check if all params exist
         this.$el = element;
         this.$container = this.$el.closest(".component-editor");
-        this.relations = _.defaults({}, relations);
+        this.relations = relations;
     };
 
     Sync.prototype.sync = function(){
         var elementsList = this.relations,
             val;
 
-        $.each(elementsList, function(items, index){
-            for (obj in items) {
-                if (item.hasOwnProperty(obj)) {
+        $.each(elementsList, function(index, items){
+            $.each(items, function(index, items){
+    debugger
+                for (obj in items) {
+                    if (item.hasOwnProperty(obj)) {
 
-                    var el = this.$el.closest(".component-editor")
-                                .find(obj.selector),
-                        val = null;
+                        var el = this.$el.closest(".component-editor")
+                                    .find(obj.selector),
+                            val = null;
 
-                    el.on("change", function(){
-                        var list = _.without(items, obj);
-                        $.each(list, function(item, index){
-                            var value = (obj.getValue)
-                                            ? obj.getValue()
-                                            : el.val();
+                        el.on("change", function(){
+                            var list = _.without(items, obj);
+                            $.each(list, function(item, index){
+                                var value = (obj.getValue)
+                                                ? obj.getValue()
+                                                : el.val();
 
-                            $(item.selector).val(value);
-                        })
-                    });
+                                $(item.selector).val(value);
+                            })
+                        });
 
+                    }
                 }
-            }
+            });
         });
         // for (element in elementsList){
         //     if (elementsList.hasOwnProperty(element)) {
@@ -96,7 +99,8 @@
                             getValue: function () { return 'bbb'}
                         }
                     ]
-                ]);
+                ]
+            );
 
             this.$el.on('change', 'input', sync.sync.bind(sync));
 
