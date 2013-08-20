@@ -32,6 +32,7 @@ TESTS_FAILED=0
 export DISPLAY=:1
 SKIP_TESTS=""
 
+# Testing for the existance of these environment variables
 if [ ! -z ${LETTUCE_BROWSER+x} ]; then
 	SKIP_TESTS="--tag -skip_$LETTUCE_BROWSER"
 fi
