@@ -12,7 +12,7 @@
 
         $.each(elementsList, function(index, items){
             $.each(items, function(index, items){
-    debugger
+    // debugger
                 for (obj in items) {
                     if (item.hasOwnProperty(obj)) {
 
@@ -45,8 +45,9 @@
         // }
     };
 
+    window.Transcripts = window.Transcripts || {};
 
-    window.Transcripts = Backbone.View.extend({
+    window.Transcripts.Editor = Backbone.View.extend({
 
         tagName: "div",
 
@@ -66,6 +67,7 @@
             this.collection = new CMS.Models.MetadataCollection(
                 this.prepareMetadata(metadataJSON)
             );
+            // this.collection = this.prepareMetadata(metadataJSON);
 
             this.template = _.template(tpl);
 
@@ -74,35 +76,34 @@
             this.collection.each(
                 function (model) {
                     var data = {
-                        el: self.$el.find('.metadata_entry')[counter++],
-                        model: model
-                    };
-                    if(model.getType() === CMS.Models.Metadata.LIST_TYPE) {
-                        new CMS.Views.Metadata.List(data);
+                            el: self.$el.find('.metadata_entry')[counter++],
+                            model: model
+                        },
+                        type = model.getType();
+
+                    if (CMS.Views.Metadata[type]) {
+                        new CMS.Views.Metadata[type](data);
                     }
-                    else {
-                        // Everything else is treated as GENERIC_TYPE, which uses String editor.
-                        new CMS.Views.Metadata.String(data);
-                    }
+
             });
 
-            var sync = new Sync(
-                this.$el,
-                [
-                    [
-                        {
-                            selector: ".basic_metadata_edit .display_name",
-                            getValue: function () { return 'aaa'}
-                        },
-                        {
-                            selector: ".metadata_edit .display_name",
-                            getValue: function () { return 'bbb'}
-                        }
-                    ]
-                ]
-            );
+            // var sync = new Sync(
+            //     this.$el,
+            //     [
+            //         [
+            //             {
+            //                 selector: ".basic_metadata_edit .display_name",
+            //                 getValue: function () { return 'aaa'}
+            //             },
+            //             {
+            //                 selector: ".metadata_edit .display_name",
+            //                 getValue: function () { return 'bbb'}
+            //             }
+            //         ]
+            //     ]
+            // );
 
-            this.$el.on('change', 'input', sync.sync.bind(sync));
+            // this.$el.on('change', 'input', sync.sync.bind(sync));
 
         },
 
@@ -123,4 +124,8 @@
         }
 
     });
+
+    // Transcripts.Metadata.String = CMS.Views.Metadata.String.extend({});
+    // Transcripts.Metadata.List = CMS.Views.Metadata.List.extend({});
+
 }());
