@@ -1,6 +1,20 @@
 <div align="center" id="${element_id}" class="${element_class}">
     <!-- main html -->
-    <iframe>
-        ${lti_html}
-    </iframe>
+        <iframe name="iframe2" id="iframe2" width="0" height="0" src="" style="border:0px; overflow-x:hidden;"></iframe>
+        <div id="page" style="display:none" >${ lti_html }</div>
+
+        <script type="text/javascript">
+
+          function getWindow(iframe) {
+              return (iframe.contentWindow) ? iframe.contentWindow : (iframe.contentDocument.document) ? iframe.contentDocument.document : iframe.contentDocument;
+          }
+
+          getWindow(document.getElementById('iframe2')).document.open();
+              getWindow(document.getElementById('iframe2')).document.write(document.getElementById('page').innerHTML);
+          getWindow(document.getElementById('iframe2')).document.close();
+
+          document.getElementById('iframe2').style.height = (getWindow(document.getElementById('iframe2')).document.body.scrollHeight + 20) +"px";
+          document.getElementById('iframe2').style.width = (document.getElementById('iframe2').parentNode.offsetWidth) +"px";
+
+        </script>
 </div>

@@ -17,15 +17,9 @@ class LTIFields(object):
     """provider_url and tool_id together is unique location of LTI in the web."""
     client_key = String(help="Client key", default='', scope=Scope.settings)
     client_secret = String(help="Client secret", default='', scope=Scope.settings)
-    provider_url = String(
-        help="URL of the tool provider",
+    lti_url = String(
+        help="URL of the tool",
         default='',
-        # TODO: Write a letter.
-        scope=Scope.settings
-    )
-    tool_id = String(
-        help="The ID of the tool",
-        default="",
         # TODO: Write a letter.
         scope=Scope.settings
     )
@@ -57,22 +51,23 @@ class LTIModule(LTIFields, XModule):
 
     def get_lti_html(self):
         """Obtains LTI html from provider"""
-        current_user = u'EdX Student'
-        test_url = u'https://bc-staging.vitalsource.com/books/L-999-70103'
-        key = '5c6b9020-066a-11e3-8ffd-0800200c9a66'
-        secret = '75413f322a7b4e76223e332c625f3d34'
-        authorization = requests.auth.OAuth1(
-            client_key=unicode(key),
-            client_secret=unicode(secret)
-        )
-        request = requests.post(
-            url=test_url,
-            auth=authorization,
-            data={u'user_id': current_user})
-        return request.content
+        if self.lti_url:
+            current_user = u'EdX Student'
+            #test_url = u'https://bc-staging.vitalsource.com/books/L-999-70103'
+            authorization = requests.auth.OAuth1(
+                client_key=self.client_key,
+                client_secret=self.client_secret
+            )
+
+            request = requests.post(
+                url=self.lti_url,
+                auth=authorization,
+                data={u'user_id': current_user})
+            return request.content
+        else:
+            return "<div>No data. Please fill fields.</div>"
 
 
 class LTIModuleDescriptor(LTIFields, MetadataOnlyEditingDescriptor):
+    """LTI Descriptor"""
     module_class = LTIModule
-
-
