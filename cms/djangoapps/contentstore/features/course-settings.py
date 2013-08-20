@@ -6,7 +6,7 @@ from terrain.steps import reload_the_page
 from selenium.webdriver.common.keys import Keys
 from common import type_in_codemirror
 
-from nose.tools import assert_true, assert_false, assert_equal
+from nose.tools import assert_true, assert_false, assert_equal  # pylint: disable=E0611
 
 COURSE_START_DATE_CSS = "#course-start-date"
 COURSE_END_DATE_CSS = "#course-end-date"

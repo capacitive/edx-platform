@@ -1,4 +1,5 @@
-from nose.tools import assert_equals, assert_raises, assert_false, assert_true, assert_not_equals
+from nose.tools import assert_equals, assert_raises, assert_false, \
+    assert_true, assert_not_equals  # pylint: disable=E0611
 import pymongo
 from uuid import uuid4
 

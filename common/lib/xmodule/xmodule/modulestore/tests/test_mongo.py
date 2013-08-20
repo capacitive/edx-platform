@@ -1,6 +1,7 @@
 from pprint import pprint
 
-from nose.tools import assert_equals, assert_raises, assert_not_equals, assert_false
+from nose.tools import assert_equals, assert_raises, \
+    assert_not_equals, assert_false  # pylint: disable=E0611
 import pymongo
 from uuid import uuid4
 

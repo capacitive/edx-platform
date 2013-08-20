@@ -3,7 +3,7 @@
 
 from lettuce import step, world
 from django.contrib.auth.models import User
-from nose.tools import assert_true
+from nose.tools import assert_true  # pylint: disable=E0611
 
 
 @step('I am an unactivated user$')

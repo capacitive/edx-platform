@@ -12,7 +12,7 @@ from django.test.client import Client
 from django.test.utils import override_settings
 from django.core.management import call_command
 from django.core.urlresolvers import reverse
-from nose.tools import assert_true
+from nose.tools import assert_true  # pylint: disable=E0611
 
 from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
 from licenses.models import CourseSoftware, UserLicense

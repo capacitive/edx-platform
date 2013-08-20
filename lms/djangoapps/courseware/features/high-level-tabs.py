@@ -1,5 +1,5 @@
 from lettuce import world, step
-from nose.tools import assert_equals
+from nose.tools import assert_equals  # pylint: disable=E0611
 
 
 @step(u'I click on the tabs then the page title should contain the following titles:')

@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from util.testing import UrlResetMixin
 
 from courseware.tests.tests import TEST_DATA_MONGO_MODULESTORE
-from nose.tools import assert_true
+from nose.tools import assert_true  # pylint: disable=E0611
 from mock import patch, Mock
 
 import logging
