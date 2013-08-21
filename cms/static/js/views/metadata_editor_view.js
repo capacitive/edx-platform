@@ -17,23 +17,28 @@ CMS.Views.Metadata.Editor = Backbone.View.extend({
         this.collection.each(
             function (model) {
                 var data = {
-                    el: self.$el.find('.metadata_entry')[counter++],
-                    model: model
-                };
+                        el: self.$el.find('.metadata_entry')[counter++],
+                        model: model
+                    },
+                    metadataEditorView = null;
+
                 if (model.getType() === CMS.Models.Metadata.SELECT_TYPE) {
-                    new CMS.Views.Metadata.Option(data);
+                    metadataEditorView = new CMS.Views.Metadata.Option(data);
                 }
                 else if (model.getType() === CMS.Models.Metadata.INTEGER_TYPE ||
                     model.getType() === CMS.Models.Metadata.FLOAT_TYPE) {
-                    new CMS.Views.Metadata.Number(data);
+                    metadataEditorView = new CMS.Views.Metadata.Number(data);
                 }
                 else if(model.getType() === CMS.Models.Metadata.LIST_TYPE) {
-                    new CMS.Views.Metadata.List(data);
+                    metadataEditorView = new CMS.Views.Metadata.List(data);
                 }
                 else {
                     // Everything else is treated as GENERIC_TYPE, which uses String editor.
-                    new CMS.Views.Metadata.String(data);
+                    metadataEditorView = new CMS.Views.Metadata.String(data);
                 }
+
+                $(data.el).data('metadataEditorView', metadataEditorView);
+
             });
     },
 

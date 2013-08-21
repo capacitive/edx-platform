@@ -10,6 +10,15 @@
 
 ## js templates
 
+<script id="transcripts-metadata-string-entry" type="text/template">
+    <%static:include path="js/transcripts/metadata-string-entry.underscore" />
+</script>
+
+<script id="transcripts-metadata-list-entry" type="text/template">
+    <%static:include path="js/transcripts/metadata-list-entry.underscore" />
+</script>
+
+
 <div class="wrapper-comp-settings basic_metadata_edit" data-metadata='{
    "display_name":{
       "default_value":"Video",
@@ -43,10 +52,32 @@
    }
 }'></div>
 
+<!-- Save Callback -->
+
 <script type="text/javascript">
     $(document).ready(function(){
         new Transcripts.Editor({
             el: $('.component-editor').find('.basic_metadata_edit')
         });
+
+        // var prepareMetadata = function(json){
+        //         var metadata = JSON.parse(json),
+        //             models = [];
+
+        //         for (model in metadata){
+        //             if (metadata.hasOwnProperty(model)) {
+        //                 models.push(metadata[model]);
+        //             }
+        //         }
+
+        //         return models;
+        //     },
+        //   el = $('.component-editor').find('.basic_metadata_edit'),
+        //   models = prepareMetadata(el.data('metadata'));
+
+        //   new CMS.Views.Metadata.Editor({
+        //       el: el,
+        //       collection: new CMS.Models.MetadataCollection(models)
+        //   })
     })
 </script>
