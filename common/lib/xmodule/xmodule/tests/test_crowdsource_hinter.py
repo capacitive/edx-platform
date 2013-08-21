@@ -2,17 +2,31 @@
 Tests the crowdsourced hinter xmodule.
 """
 
-from mock import Mock, MagicMock
+from mock import Mock, MagicMock, patch
 import unittest
 import copy
 
-from xmodule.crowdsource_hinter import CrowdsourceHinterModule
 from xmodule.vertical_module import VerticalModule, VerticalDescriptor
 
 from . import get_test_system
 
 import json
 
+
+class FakeModulestore(object):
+    """
+    Mocks out the Django modulestore.
+    """
+    def __init__(self):
+        pass
+
+    def get_items(self, item):
+        descriptor = MagicMock()
+        descriptor.name = 'capa'
+        return [descriptor]
+
+with patch('xmodule.modulestore.django.modulestore', new=FakeModulestore):
+    from xmodule.crowdsource_hinter import CrowdsourceHinterModule
 
 class CHModuleFactory(object):
     """
@@ -22,22 +36,21 @@ class CHModuleFactory(object):
 
     sample_problem_xml = """
     <?xml version="1.0"?>
-    <crowdsource_hinter>
-        <problem display_name="Numerical Input" markdown="A numerical input problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.&#10;&#10;The answer is correct if it is within a specified numerical tolerance of the expected answer.&#10;&#10;Enter the number of fingers on a human hand:&#10;= 5&#10;&#10;[explanation]&#10;If you look at your hand, you can count that you have five fingers. [explanation] " rerandomize="never" showanswer="finished">
-          <p>A numerical input problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.</p>
-          <p>The answer is correct if it is within a specified numerical tolerance of the expected answer.</p>
-          <p>Enter the number of fingers on a human hand:</p>
-          <numericalresponse answer="5">
-            <formulaequationinput/>
-          </numericalresponse>
-          <solution>
-            <div class="detailed-solution">
-              <p>Explanation</p>
-              <p>If you look at your hand, you can count that you have five fingers. </p>
-            </div>
-          </solution>
-        </problem>
-    </crowdsource_hinter>
+    <crowdsource_hinter target_problem="i4x://Me/19.002/problem/sample" />
+    <problem display_name="Numerical Input" markdown="A numerical input problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.&#10;&#10;The answer is correct if it is within a specified numerical tolerance of the expected answer.&#10;&#10;Enter the number of fingers on a human hand:&#10;= 5&#10;&#10;[explanation]&#10;If you look at your hand, you can count that you have five fingers. [explanation] " rerandomize="never" showanswer="finished">
+      <p>A numerical input problem accepts a line of text input from the student, and evaluates the input for correctness based on its numerical value.</p>
+      <p>The answer is correct if it is within a specified numerical tolerance of the expected answer.</p>
+      <p>Enter the number of fingers on a human hand:</p>
+      <numericalresponse answer="5">
+        <formulaequationinput/>
+      </numericalresponse>
+      <solution>
+        <div class="detailed-solution">
+          <p>Explanation</p>
+          <p>If you look at your hand, you can count that you have five fingers. </p>
+        </div>
+      </solution>
+    </problem>
     """
 
     num = 0
@@ -99,6 +112,8 @@ class CHModuleFactory(object):
 
         if moderate is not None:
             model_data['moderate'] = moderate
+
+        model_data['target_problem'] = 'i4x://Me/19.002/problem/sample'
 
         descriptor = Mock(weight='1')
         # Make the descriptor have a capa problem child.
@@ -202,59 +217,11 @@ class VerticalWithModulesFactory(object):
         return module
 
 
-class FakeChild(object):
-    """
-    A fake Xmodule.
-    """
-    def __init__(self):
-        self.system = Mock()
-        self.system.ajax_url = 'this/is/a/fake/ajax/url'
-
-    def get_html(self):
-        """
-        Return a fake html string.
-        """
-        return 'This is supposed to be test html.'
-
-
 class CrowdsourceHinterTest(unittest.TestCase):
     """
     In the below tests, '24.0' represents a wrong answer, and '42.5' represents
     a correct answer.
     """
-
-    def test_gethtml(self):
-        """
-        A simple test of get_html - make sure it returns the html of the inner
-        problem.
-        """
-        mock_module = CHModuleFactory.create()
-
-        def fake_get_display_items():
-            """
-            A mock of get_display_items
-            """
-            return [FakeChild()]
-        mock_module.get_display_items = fake_get_display_items
-        out_html = mock_module.get_html()
-        self.assertTrue('This is supposed to be test html.' in out_html)
-        self.assertTrue('this/is/a/fake/ajax/url' in out_html)
-
-    def test_gethtml_nochild(self):
-        """
-        get_html, except the module has no child :(  Should return a polite
-        error message.
-        """
-        mock_module = CHModuleFactory.create()
-
-        def fake_get_display_items():
-            """
-            Returns no children.
-            """
-            return []
-        mock_module.get_display_items = fake_get_display_items
-        out_html = mock_module.get_html()
-        self.assertTrue('Error in loading crowdsourced hinter' in out_html)
 
     @unittest.skip("Needs to be finished.")
     def test_gethtml_multiple(self):
